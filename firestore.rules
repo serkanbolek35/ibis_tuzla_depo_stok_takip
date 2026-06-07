@@ -1,0 +1,89 @@
+// ============================================================
+// firestore.rules
+// Firebase Console → Firestore → Rules sekmesine yapıştır
+// Paste this in Firebase Console → Firestore → Rules tab
+// ============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── YARDIMCI FONKSİYONLAR / HELPER FUNCTIONS ──────────
+
+    // Kullanıcı giriş yapmış mı?
+    // Is the user authenticated?
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Kullanıcının rolünü Firestore'dan al
+    // Get the user's role from Firestore
+    function getRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // Admin mi? (Manager veya Chef)
+    // Is the user an admin? (Manager or Chef)
+    function isAdmin() {
+      return isSignedIn() && getRole() == 'admin';
+    }
+
+    // Giriş yapmış herhangi biri (admin + staff)
+    // Any signed-in user (admin + staff)
+    function isAnyStaff() {
+      return isSignedIn();
+    }
+
+    // ── KULLANICLAR / USERS ───────────────────────────────
+    match /users/{uid} {
+      // Kendi belgesini okuyabilir; admin hepsini okuyabilir
+      // Can read own document; admin can read all
+      allow read: if request.auth.uid == uid || isAdmin();
+      // Sadece admin yazabilir (rol değiştirme)
+      // Only admin can write (role changes)
+      allow write: if isAdmin();
+    }
+
+    // ── DEPO STOKU / DEPOT STOCK ──────────────────────────
+    match /depot_stock/{itemId} {
+      // Giriş yapan herkes okuyabilir
+      // Anyone signed in can read
+      allow read: if isAnyStaff();
+      // Sadece admin yazabilir (stok ekleme / düzeltme)
+      // Only admin can write (add stock / override)
+      allow write: if isAdmin();
+    }
+
+    // ── KONUM STOKLARI / LOCATION STOCKS ─────────────────
+    match /location_stock/{locationId} {
+      // Giriş yapan herkes okuyabilir ve yazabilir
+      // Any signed-in user can read and write (staff transfers)
+      allow read, write: if isAnyStaff();
+    }
+
+    // ── RAPORLAR / REPORTS ────────────────────────────────
+    match /reports/{reportId} {
+      // Admin hepsini okur; staff sadece kendi raporlarını
+      // Admin reads all; staff reads only their own
+      allow read: if isAdmin()
+        || (isSignedIn() && resource.data.submittedBy == request.auth.uid);
+      // Giriş yapan herkes rapor oluşturabilir (staff transfer raporu)
+      // Any signed-in user can create a report (staff transfer)
+      allow create: if isAnyStaff();
+      // Silme ve güncelleme sadece admin
+      // Only admin can update or delete
+      allow update, delete: if isAdmin();
+    }
+
+    // ── STOK GİRİŞ KAYITLARI / STOCK ENTRY AUDIT LOG ────
+    match /stock_entries/{entryId} {
+      // Sadece admin (denetim kaydı)
+      // Admin only (audit trail)
+      allow read, write: if isAdmin();
+    }
+
+    // ── VARSAYILAN: REDDET / DEFAULT: DENY ───────────────
+    // Yukarıda eşleşmeyen tüm istekler reddedilir
+    // All requests not matched above are denied
+  }
+}
