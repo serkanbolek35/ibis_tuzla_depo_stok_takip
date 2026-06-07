@@ -1,24 +1,21 @@
 import { defineConfig } from "vite";
 import react            from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
 
-  // Geliştirme sunucusu / Dev server
+  base: "/ibis_tuzla_depo_stok_takip/",  // ← bunu ekle
+
   server: {
     port: 3000,
     open: true,
   },
 
-  // Build optimizasyonu / Build optimization
   build: {
     outDir:    "dist",
-    sourcemap: false, // Üretimde false bırak / false in production
+    sourcemap: false,
     rollupOptions: {
       output: {
-        // Firebase SDK'yı ayrı chunk'a al (daha hızlı cache)
-        // Split Firebase into its own chunk (better caching)
         manualChunks: {
           firebase: ["firebase/app", "firebase/auth", "firebase/firestore"],
         },
