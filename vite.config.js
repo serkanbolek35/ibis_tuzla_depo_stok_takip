@@ -3,14 +3,11 @@ import react            from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-
-  base: "/ibis_tuzla_depo_stok_takip/",  // ← bunu ekle
-
+  base: "/ibis_tuzla_depo_stok_takip/",
   server: {
     port: 3000,
     open: true,
   },
-
   build: {
     outDir:    "dist",
     sourcemap: false,
