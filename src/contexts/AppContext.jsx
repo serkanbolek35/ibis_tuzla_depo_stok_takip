@@ -14,17 +14,16 @@ import {
 
 // Hardcoded seed user UIDs — replace with your actual Firebase Auth UIDs
 const SEED_USERS = [
-  { uid: "tcBDJ6xrieWagdWNmWnIWQtzIaD3",   email: "emrahkarakus@ibis.com.tr",  name: "Emrah Karakuş",  role: "admin" },
-  { uid: "TTSUyV1lhfcw5vHVLTKZ1CS5EQt1",   email: "ferdiasik@ibis.com.tr",     name: "Ferdi Aşık",     role: "admin" },
-  { uid: "PDi2cwcDOsWUPPiWOf1KInUgnbr1",    email: "enecan@ibis.com.tr",        name: "Enes Can",        role: "staff" },
-  { uid: "5PhgB7e4SpOFusZsUJ6rJCwuXDc2",    email: "iremcetinkaya@ibis.com.tr", name: "İrem Çetinkaya", role: "staff" },
-  { uid: "8wDqPqAa5LPeIODR08EUnYTRllH2",   email: "pinarturkel@ibis.com.tr",   name: "Pınar Türkel",   role: "staff" },
-  { uid: "E3cG38h53FYpH0v0rqEJ7Umfpof2",  email: "serkanbolek@ibis.com.tr",   name: "Serkan Bölek",   role: "staff" },
-  { uid: "Xd6DbHbpX1hXKXOC6SFBUqPzhEx1",  email: "zeynepguven@ibis.com.tr",   name: "Zeynep Güven",   role: "staff" },
-  { uid: "mTfL0zn4qfUeJ6mnSPUKrULCvxg1",     email: "ayephokho@ibis.com.tr",     name: "Aye Phokho",     role: "staff" },
-  { uid: "f8SD2kFou4YLsMCrR9lW7ZCIzgn1",     email: "zinmyohtet@ibis.com.tr",    name: "Zin Myo Htet",   role: "staff" },
+  { uid: "tcBDJ6xrieWagdWNmWnIWQtzI",    email: "emrahkarakus@ibis.com.tr",  name: "Emrah Karakuş",  role: "admin" },
+  { uid: "TTSUyV1lhfcw5vHVLTKZ1CS5EQt1", email: "ferdiasik@ibis.com.tr",     name: "Ferdi Aşık",     role: "admin" },
+  { uid: "PDi2cwcDOsWUPPiWOf1KInUgnbr1", email: "enecan@ibis.com.tr",        name: "Enes Can",        role: "staff" },
+  { uid: "5PhgB7e4SpOFusZsUJ6rJCwuXDc2", email: "iremcetinkaya@ibis.com.tr", name: "İrem Çetinkaya", role: "staff" },
+  { uid: "8wDqPqAa5LPeIODR08EUnYTRllH2", email: "pinarturkel@ibis.com.tr",   name: "Pınar Türkel",   role: "staff" },
+  { uid: "E3cG38h53FYpH0v0rqEJ7Umfpof2", email: "serkanbolek@ibis.com.tr",   name: "Serkan Bölek",   role: "staff" },
+  { uid: "Xd6DbHbpX1hXKXOC6SFBUqPzhEx1", email: "zeynepguven@ibis.com.tr",   name: "Zeynep Güven",   role: "staff" },
+  { uid: "mTfL0zn4qfUeJ6mnSPUKrULCvxg1", email: "ayephokho@ibis.com.tr",     name: "Aye Phokho",     role: "staff" },
+  { uid: "f8SD2kFou4YLsMCrR9lW7ZCIzgn1", email: "zinmyohtet@ibis.com.tr",    name: "Zin Myo Htet",   role: "staff" },
 ];
-
 const AppContext = createContext(null);
 export const useApp = () => useContext(AppContext);
 
