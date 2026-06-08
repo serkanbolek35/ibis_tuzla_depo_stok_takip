@@ -2,35 +2,47 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper functions
+    function isSignedIn()  { return request.auth != null; }
     function isAdmin() {
-      return request.auth != null &&
+      return isSignedIn() &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
+    function isOwner(uid)  { return isSignedIn() && request.auth.uid == uid; }
 
-    function isAuth() { return request.auth != null; }
-
+    // users — staff can read own doc, admin can read/write all
     match /users/{uid} {
-      allow read: if request.auth.uid == uid || isAdmin();
+      allow read:  if isOwner(uid) || isAdmin();
       allow write: if isAdmin();
     }
 
+    // depot_stock — everyone reads, only admins write
     match /depot_stock/{itemId} {
-      allow read: if isAuth();
+      allow read:  if isSignedIn();
       allow write: if isAdmin();
     }
 
-    match /location_stock/{id} {
-      allow read, write: if isAuth();
+    // location_stock — everyone authenticated can read/write
+    match /location_stock/{docId} {
+      allow read, write: if isSignedIn();
     }
 
-    match /reports/{id} {
-      allow read: if isAdmin() || (isAuth() && resource.data.submittedBy == request.auth.uid);
-      allow create: if isAuth();
+    // reports — staff can create + read own; admins can do everything
+    match /reports/{reportId} {
+      allow read:   if isAdmin() || (isSignedIn() && resource.data.submittedBy == request.auth.uid);
+      allow create: if isSignedIn();
       allow update, delete: if isAdmin();
     }
 
-    match /stock_entries/{id} {
+    // stock_entries — audit log; only admins
+    match /stock_entries/{entryId} {
       allow read, write: if isAdmin();
+    }
+
+    // products — dynamic product catalogue, only admins write
+    match /products/{productId} {
+      allow read:  if isSignedIn();
+      allow write: if isAdmin();
     }
   }
 }
